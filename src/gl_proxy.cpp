@@ -4,6 +4,7 @@
 #include <cstdarg>
 #include <cctype>
 #include <string>
+#include <set>
 #include <iostream>
 
 extern "C" {
@@ -37,6 +38,9 @@ static bool g_cheatsEnabled = false;
 static int g_toggleKey = VK_F2;
 static bool g_toggleKeyPressed = false;
 static std::string g_toggleKeyName = "F2";
+static std::set<int> seen_counts;
+static int lastPotentialCount = -1;
+static int repeatCount = 0;
 
 static std::string NormalizeKeyName(const std::string& key) {
     std::string result;
@@ -198,6 +202,18 @@ void WINAPI my_glDrawElements(GLenum mode, GLsizei count, GLenum type, const voi
         real_glEnable(GL_DEPTH_TEST);
         real_glEnable(GL_BLEND);
     } else {
+        if (count >= 10000 && count <= 50000) {
+            if (count == lastPotentialCount) {
+                repeatCount++;
+                if (repeatCount > 10 && seen_counts.find(count) == seen_counts.end()) {
+                    seen_counts.insert(count);
+                    std::cout << "Likely player count: " << count << std::endl;
+                }
+            } else {
+                lastPotentialCount = count;
+                repeatCount = 0;
+            }
+        }
         real_glDrawElements(mode, count, type, indices);
     }
 }
@@ -213,6 +229,18 @@ void WINAPI my_glDrawRangeElements(GLenum mode, GLuint start, GLuint end, GLsize
         real_glEnable(GL_DEPTH_TEST);
         real_glEnable(GL_BLEND);
     } else {
+        if (count >= 10000 && count <= 50000) {
+            if (count == lastPotentialCount) {
+                repeatCount++;
+                if (repeatCount > 10 && seen_counts.find(count) == seen_counts.end()) {
+                    seen_counts.insert(count);
+                    std::cout << "Likely player count: " << count << std::endl;
+                }
+            } else {
+                lastPotentialCount = count;
+                repeatCount = 0;
+            }
+        }
         real_glDrawRangeElements(mode, start, end, count, type, indices);
     }
 }
