@@ -193,8 +193,10 @@ void WINAPI my_glDrawElements(GLenum mode, GLsizei count, GLenum type, const voi
 
     if (IsPlayer(count)) {
         real_glDisable(GL_DEPTH_TEST);
+        real_glDisable(GL_BLEND);
         real_glDrawElements(mode, count, type, indices);
         real_glEnable(GL_DEPTH_TEST);
+        real_glEnable(GL_BLEND);
     } else {
         real_glDrawElements(mode, count, type, indices);
     }
@@ -206,8 +208,10 @@ void WINAPI my_glDrawRangeElements(GLenum mode, GLuint start, GLuint end, GLsize
 
     if (IsPlayer(count)) {
         real_glDisable(GL_DEPTH_TEST);
+        real_glDisable(GL_BLEND);
         real_glDrawRangeElements(mode, start, end, count, type, indices);
         real_glEnable(GL_DEPTH_TEST);
+        real_glEnable(GL_BLEND);
     } else {
         real_glDrawRangeElements(mode, start, end, count, type, indices);
     }
